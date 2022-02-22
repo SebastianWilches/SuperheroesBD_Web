@@ -22,6 +22,7 @@ function updatePage() {
                                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal${value.heroe}">
                                                     Más Información
                                                 </button>
+                                                <button type="button" class="btn btn-danger" onclick="deleteHero('${key}')">BORRAR SUPERHEROE</button>
                                                 </div>
                                             </div>
                                         </div>`;
@@ -131,6 +132,10 @@ const getData = () => {
     return objetoForm;
 }
 
+//Funcion test para borrar
+const enviarMensaje = (mensaje) => {
+    console.log(mensaje);
+}
 
 /*                          EVENTOS              */
 //crearObjeto haciendo uso de la función addHero y getData
