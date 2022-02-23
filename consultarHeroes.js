@@ -1,8 +1,12 @@
 //Global var
 const API_URL = "https://peticiones---giweb-default-rtdb.firebaseio.com/heroes";
+/*ESTRUCTURA FIREBASE
+BD => HEROES => ID => (debilidad, descripcion, edad, heroe, imagen, nombre, superpoder)
+*/
 let globalData = {};
 let principalContainer = document.getElementById('container-heroes');
-let modalContainer = document.getElementById("modalContainer");
+let modalContainerInfoHeroe = document.getElementById("modalContainerInfoHeroe");
+let modalContainerUpdateHeroe = document.getElementById("modalContainerUpdateHeroe");
 
 
 
@@ -16,20 +20,22 @@ function updatePage() {
                                             <div class="card h-100" style="width: 18rem;" id="${value.heroe}">
                                                 <img src="${value.imagen}" class="card-img-top" alt="...">
                                                 <div class="card-body">
-                                                <h5 class="card-title">${value.heroe}</h5>
-                                                <p class="card-text">Nombre: ${value.nombre}</p>
-                                                <p class="card-text">Edad: ${value.edad}</p>
-                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal${value.heroe}">
-                                                    Más Información
-                                                </button>
-                                                <button type="button" class="btn btn-danger" onclick="deleteHero('${key}')">BORRAR SUPERHEROE</button>
+                                                    <h5 class="card-title">${value.heroe}</h5>
+                                                    <p class="card-text">Nombre: ${value.nombre}</p>
+                                                    <p class="card-text">Edad: ${value.edad}</p>
+                                                    <div class="d-flex justify-content-between">
+                                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal${value.heroe}Info">
+                                                            Más Información
+                                                        </button>
+                                                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteHero('${key}')">BORRAR SUPERHEROE</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>`;
 
 
-        modalContainer.innerHTML += `
-        <div class="modal fade" id="modal${value.heroe}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        modalContainerInfoHeroe.innerHTML += `
+        <div class="modal fade" id="modal${value.heroe}Info" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -37,12 +43,61 @@ function updatePage() {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                    <p>Superpoder: ${value.superpoder}</p>
-                    <p>Descripción: ${value.descripcion}</p>
-                    <p>Debilidad: ${value.debilidad}</p>
+                        <p><span class="bold">Nombre: </span>${value.nombre}</p>
+                        <p><span class="bold">Edad: </span>${value.edad}</p>
+                        <p><span class="bold">Superpoder: </span>${value.superpoder}</p>
+                        <p><span class="bold">Descripción: </span>${value.descripcion}</p>
+                        <p><span class="bold">Debilidad: </span>${value.debilidad}</p>
                     </div>
                     <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modal${value.heroe}Update">Actualizar información</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+        modalContainerUpdateHeroe.innerHTML += `
+        <div class="modal fade" id="modal${value.heroe}Update" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">${value.heroe}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                        <label for="${key}HeroeInputUpdate" class="form-label">Heroe</label>
+                        <input type="text" class="form-control" id="${key}HeroeInputUpdate" placeholder="Heroe" value="${value.heroe}">
+                        </div>
+                        <div class="mb-3">
+                        <label for="${key}NombreInputUpdate" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="${key}NombreInputUpdate" placeholder="Nombre" value="${value.nombre}">
+                        </div>
+                        <div class="mb-3">
+                        <label for="${key}EdadInputUpdate" class="form-label">Edad</label>
+                        <input type="text" class="form-control" id="${key}EdadInputUpdate" placeholder="Edad" value="${value.edad}">
+                        </div>
+                        <div class="mb-3">
+                        <label for="${key}SuperpoderInputUpdate" class="form-label">Superpoder</label>
+                        <input type="text" class="form-control" id="${key}SuperpoderInputUpdate" placeholder="Superpoder" value="${value.superpoder}">
+                        </div>
+                        <div class="mb-3">
+                        <label for="${key}DescripcionInputUpdate" class="form-label">Descripcion</label>
+                        <input type="text" class="form-control" id="${key}DescripcionInputUpdate" placeholder="Descripcion" value="${value.descripcion}">
+                        </div>
+                        <div class="mb-3">
+                        <label for="${key}DebilidadInputUpdate" class="form-label">Debilidad</label>
+                        <input type="text" class="form-control" id="${key}DebilidadInputUpdate" placeholder="Debilidad" value="${value.debilidad}">
+                        </div>
+                        <div class="mb-3">
+                        <label for="${key}ImagenInputUpdate" class="form-label">Imagen</label>
+                        <input type="text" class="form-control" id="${key}ImagenInputUpdate" placeholder="Imagen" value="${value.imagen}">
+                        </div>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-dark" onclick=eventUpdateHero('${key}HeroeInputUpdate','${key}EdadInputUpdate','${key}ImagenInputUpdate','${key}NombreInputUpdate','${key}SuperpoderInputUpdate','${key}DescripcionInputUpdate','${key}DebilidadInputUpdate','${key}')>Actualizar información</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -132,17 +187,46 @@ const getData = () => {
     return objetoForm;
 }
 
-//Funcion test para borrar
+/*Funciones test
 const enviarMensaje = (mensaje) => {
     console.log(mensaje);
 }
+const createTest = (idInput, idInput2) => {
+    const testInput = document.getElementById(idInput).value;
+    const testInput2 = document.getElementById(idInput2).value;
+    console.log(testInput+testInput2);
+}*/
 
 /*                          EVENTOS              */
 //crearObjeto haciendo uso de la función addHero y getData
 const createHero = () => {
     addHero(getData());
-    location.reload();
+}
+
+
+//Obtener un solo heroe del modal de updateHero
+const eventUpdateHero = (inputHeroe, inputEdad, inputImagen, inputNombre, inputSuperpoder, inputDescripcion, inputDebilidad, id) => {
+    const heroe = document.getElementById(inputHeroe).value;
+    const edad = document.getElementById(inputEdad).value;
+    const imagen = document.getElementById(inputImagen).value;
+    const nombre = document.getElementById(inputNombre).value;
+    const superpoder = document.getElementById(inputSuperpoder).value;
+    const descripcion = document.getElementById(inputDescripcion).value;
+    const debilidad = document.getElementById(inputDebilidad).value;
+    
+    let objetoForm = {
+        debilidad: debilidad,
+        descripcion: descripcion,
+        edad: edad,
+        heroe: heroe,
+        imagen: imagen,
+        nombre: nombre,
+        superpoder: superpoder,
+    }
+    
+    updateHero(id, objetoForm);
 }
 
 /*                      LLamar funciones            */
 getAll(); //Traer heroes de la BD
+
