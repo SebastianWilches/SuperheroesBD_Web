@@ -7,6 +7,7 @@ let globalData = {};
 let principalContainer = document.getElementById('container-heroes');
 let modalContainerInfoHeroe = document.getElementById("modalContainerInfoHeroe");
 let modalContainerUpdateHeroe = document.getElementById("modalContainerUpdateHeroe");
+let modalContainerDeleteHero = document.getElementById("modalContainerDeleteHero");
 
 
 
@@ -17,17 +18,17 @@ function updatePage() {
     Object.entries(globalData).forEach(([key, value]) => {
         // console.log(heroe)
         principalContainer.innerHTML += `<div class="col">
-                                            <div class="card h-100" style="width: 18rem;" id="${value.heroe}">
+                                            <div class="card h-100" style="width: 18rem;" id="${key}">
                                                 <img src="${value.imagen}" class="card-img-top" alt="...">
                                                 <div class="card-body">
                                                     <h5 class="card-title">${value.heroe}</h5>
                                                     <p class="card-text">Nombre: ${value.nombre}</p>
                                                     <p class="card-text">Edad: ${value.edad}</p>
                                                     <div class="d-flex justify-content-between">
-                                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal${value.heroe}Info">
+                                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal${key}Info">
                                                             Más Información
                                                         </button>
-                                                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteHero('${key}')">BORRAR SUPERHEROE</button>
+                                                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modal${key}Delete">BORRAR SUPERHEROE</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -35,7 +36,7 @@ function updatePage() {
 
 
         modalContainerInfoHeroe.innerHTML += `
-        <div class="modal fade" id="modal${value.heroe}Info" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="modal${key}Info" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -50,7 +51,7 @@ function updatePage() {
                         <p><span class="bold">Debilidad: </span>${value.debilidad}</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modal${value.heroe}Update">Actualizar información</button>
+                        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modal${key}Update">Actualizar información</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -58,7 +59,7 @@ function updatePage() {
         </div>`;
 
         modalContainerUpdateHeroe.innerHTML += `
-        <div class="modal fade" id="modal${value.heroe}Update" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="modal${key}Update" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -102,6 +103,23 @@ function updatePage() {
                 </div>
             </div>
         </div>`
+
+
+        modalContainerDeleteHero.innerHTML += `
+        <div class="modal fade" id="modal${key}Delete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <h5 class="modal-title" id="exampleModalLabel">¿Esta seguro que desea borrar a ${value.nombre}?</h5>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteHero('${key}')">BORRAR SUPERHEROE</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `
     })
 }
 
@@ -139,6 +157,9 @@ const addHero = async(objectHero) =>{
         });  
     const data = await response.json();
     console.log(data);
+
+    //Actualizar pagina para mostrar la info    
+    recargarPagina();
 }
 
 //PUT
@@ -152,6 +173,10 @@ const updateHero = async(id, objectHero) =>{
     })
     const data = await response.json();
     console.log(data);
+
+
+    //Actualizar pagina para mostrar la info    
+    recargarPagina();    
 }
 
 //DELETE
@@ -161,6 +186,10 @@ const deleteHero = async(id) => {
     })
     const data = await response.json();
     console.log(data);
+
+
+    //Actualizar pagina para mostrar la info    
+    recargarPagina();
 }
 
 
@@ -187,15 +216,10 @@ const getData = () => {
     return objetoForm;
 }
 
-/*Funciones test
-const enviarMensaje = (mensaje) => {
-    console.log(mensaje);
+const recargarPagina = () => {
+    location.reload();
 }
-const createTest = (idInput, idInput2) => {
-    const testInput = document.getElementById(idInput).value;
-    const testInput2 = document.getElementById(idInput2).value;
-    console.log(testInput+testInput2);
-}*/
+
 
 /*                          EVENTOS              */
 //crearObjeto haciendo uso de la función addHero y getData
@@ -225,6 +249,9 @@ const eventUpdateHero = (inputHeroe, inputEdad, inputImagen, inputNombre, inputS
     }
     
     updateHero(id, objetoForm);
+
+
+    
 }
 
 /*                      LLamar funciones            */
